@@ -1,0 +1,26 @@
+group 'lockss'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+task runApp(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+
+    main = 'org.lockss.Main'
+
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile group: 'org.jsoup', name: 'jsoup', version: '1.9.1'
+    compile 'org.jwat:jwat-warc:1.0.4'
+    compile 'org.apache.solr:solr-solrj:6.0.0'
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'org.slf4j:slf4j-simple:1.7.21'
+}

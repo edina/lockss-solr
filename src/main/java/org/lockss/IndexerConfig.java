@@ -3,42 +3,51 @@ package org.lockss;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IndexerConfig {
 
     private static Logger logger = LoggerFactory.getLogger(IndexerConfig.class);
 
-    private static Properties properties = null;
+    private static Map<String, String> env = null;
+
+    public static String LOCKSS_SOLR_URL = "LOCKSS_SOLR_URL";
+    public static String LOCKSS_SOLR_WATCHDIR = "LOCKSS_SOLR_WATCHDIR";
+    public static String LOCKSS_SOLR_BATCH_SIZE = "LOCKSS_SOLR_BATCH_SIZE";
+
+    private static String LOCKSS_SOLR_URL_VALUE = "http://localhost:8983";
+    private static String LOCKSS_SOLR_WATCHDIR_VALUE = "samples/";
+    private static String LOCKSS_SOLR_BATCH_SIZE_VALUE = "10";
 
     /**
-     * Returns the Properties object and creates it if it doesn't exist
-     * @return Properties object with the configuration loaded
+     * Returns the environment variables map and loads it if it doesn't exist
+     * @return Map of configuration variables
      */
-    public Properties getConfig() {
-        if (properties == null) {
+    public Map<String, String> getConfig() {
+        if (env == null) {
             loadConfig();
         }
-        return properties;
+        return env;
     }
 
     /**
-     * Pulls the configuration data from config.properties and populates the Properties object
+     * Loads a map of environment variables and sets some defaults if they don't exist.
      */
-    private void loadConfig() {
-        properties = new Properties();
-        String propertiesFile = "config.properties";
-        InputStream is = getClass().getClassLoader().getResourceAsStream(propertiesFile);
-        if (is != null) {
-            try {
-                properties.load(is);
-            } catch (IOException e) {
-                logger.error("Could not read config file", e);
-            }
-        } else {
-            logger.error("property file: '" + propertiesFile + "'could not be found");
+    public void loadConfig() {
+        // The environment variable map is unmodifiable so we need to make a copy if we want to add these default values
+        env = new HashMap<>(System.getenv());
+        if (!env.containsKey(LOCKSS_SOLR_URL)) {
+            logger.info("Solr URL not set so using default '" + LOCKSS_SOLR_URL_VALUE + "'");
+            env.put(LOCKSS_SOLR_URL, LOCKSS_SOLR_URL_VALUE);
+        }
+        if (!env.containsKey(LOCKSS_SOLR_WATCHDIR)) {
+            logger.info("Watch directory not set so using default '" + LOCKSS_SOLR_WATCHDIR_VALUE + "'");
+            env.put(LOCKSS_SOLR_WATCHDIR, LOCKSS_SOLR_WATCHDIR_VALUE);
+        }
+        if (!env.containsKey(LOCKSS_SOLR_BATCH_SIZE)) {
+            logger.info("Solr batch size not set so using default '" + LOCKSS_SOLR_BATCH_SIZE_VALUE + "'");
+            env.put(LOCKSS_SOLR_BATCH_SIZE, LOCKSS_SOLR_BATCH_SIZE_VALUE);
         }
     }
 }

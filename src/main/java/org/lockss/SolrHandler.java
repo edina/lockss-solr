@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class SolrHandler {
@@ -26,9 +27,9 @@ public class SolrHandler {
      * @return SolrClient object used to connect to the Solr server
      */
     public static SolrClient getClient() {
-        IndexerConfig config = new IndexerConfig();
-        Properties properties = config.getConfig();
-        String solrUrl = properties.getProperty("solrURL");
+        IndexerConfig indexerConfig = new IndexerConfig();
+        Map<String, String> config = indexerConfig.getConfig();
+        String solrUrl = config.get(IndexerConfig.LOCKSS_SOLR_URL);
         if (client == null) {
             logger.info("Connecting to Solr server at: " + solrUrl);
             client = new HttpSolrClient(solrUrl);
@@ -41,8 +42,11 @@ public class SolrHandler {
      * @param doc Solr document to be added to the list
      */
     public static void solrAdd(SolrInputDocument doc) {
+        IndexerConfig indexerConfig = new IndexerConfig();
+        Map<String, String> config = indexerConfig.getConfig();
+        Integer batchSize = new Integer(config.get(IndexerConfig.LOCKSS_SOLR_BATCH_SIZE));
         documents.add(doc);
-        if (documents.size() > 10) {
+        if (documents.size() > batchSize) {
             solrCommit();
         }
     }

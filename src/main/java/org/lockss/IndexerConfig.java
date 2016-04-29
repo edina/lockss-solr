@@ -16,7 +16,7 @@ public class IndexerConfig {
     public static String LOCKSS_SOLR_WATCHDIR = "LOCKSS_SOLR_WATCHDIR";
     public static String LOCKSS_SOLR_BATCH_SIZE = "LOCKSS_SOLR_BATCH_SIZE";
 
-    private static String LOCKSS_SOLR_URL_VALUE = "http://localhost:8983";
+    private static String LOCKSS_SOLR_URL_VALUE = "http://localhost:8983/solr/test-core";
     private static String LOCKSS_SOLR_WATCHDIR_VALUE = "samples/";
     private static String LOCKSS_SOLR_BATCH_SIZE_VALUE = "10";
 

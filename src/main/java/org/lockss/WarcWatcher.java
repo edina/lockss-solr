@@ -28,7 +28,9 @@ public class WarcWatcher {
             watchService = FileSystems.getDefault().newWatchService();
             path.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
         } catch (IOException ioe) {
-            logger.error("Could not start watcher", ioe);
+            // If we can't start the watcher then there's no point continuing to run
+            logger.error("Could not start watcher as the directory could not be found, exiting");
+            System.exit(1);
         }
         for (;;) {
             WatchKey key;
@@ -42,6 +44,7 @@ public class WarcWatcher {
             long startTime = System.nanoTime();
             for (WatchEvent<?> event: key.pollEvents()) {
                 WatchEvent.Kind<?> kind = event.kind();
+                logger.info("Event kind: " + kind.name());
                 WatchEvent<Path> ev = (WatchEvent<Path>) event;
                 Path filename = ev.context();
                 // The ev.context() method just returns the filename rather than the full path. If the File object is

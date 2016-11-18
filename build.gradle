@@ -11,10 +11,12 @@ task runApp(type: JavaExec) {
 
 // Create a single Jar with all dependencies
 task fatJar(type: Jar) {
-        manifest {
-        attributes 'Implementation-Title': 'LOCKSS Solr',  
-                'Implementation-Version': version,
-                'Main-Class': 'org.lockss.Main'
+    manifest {
+        attributes(
+        	'Implementation-Title': 'LOCKSS Solr',  
+            'Implementation-Version': version,
+            'Main-Class': 'org.lockss.Main'
+        )
     }
     baseName = project.name + '-all'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }

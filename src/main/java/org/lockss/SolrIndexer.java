@@ -71,8 +71,12 @@ public class SolrIndexer {
      * Adds the HTTP headers to the Solr document
      */
     private void indexHeaders() {
-        logger.info("Content-type:" + httpHeaders.get("Content-Type"));
-        solrDoc.addField("contentType_s", httpHeaders.get("Content-Type"));
+        // logger.info("Content-type:" + httpHeaders.get("Content-Type"));
+        // solrDoc.addField("contentType_s", httpHeaders.get("Content-Type"));
+        for (Map.Entry<String, String> entry : httpHeaders.entrySet()) {
+            logger.info(entry.getKey() + ": " + entry.getValue());
+            solrDoc.addField("header_" + entry.getKey().replaceAll("-","") + "_t", entry.getValue());
+        }
     }
 
     /**

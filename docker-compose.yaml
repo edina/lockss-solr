@@ -1,0 +1,25 @@
+version: '2'
+services: 
+  solr:
+    image: solr
+    container_name: lockss-solr
+    ports:
+     - "8983:8983"
+    volumes:
+      - ./test-core:/opt/solr/server/solr/test-core
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - test-core
+    privileged: true
+
+  indexer:
+    build: .
+    container_name: lockss-indexer
+    environment:
+      - LOCKSS_SOLR_WATCHDIR=/var/data/warcs
+      - LOCKSS_SOLR_URL=http://solr:8983/solr/test-core
+    links:
+      - solr
+    volumes:
+      - ${LOCKSS_SOLR_WATCHDIR}:/var/data/warcs:ro

@@ -2,8 +2,9 @@
 =======================
 
 ### Introduction
-This is an application that takes WARC files and indexes them in Solr. A ready-to-use Solr Docker configuration can be found in `solr/`
+This is an application that takes WARC files in a given directory and indexes them in Solr. A ready-to-use Solr Docker configuration can be found in `solr/`
 
+### Gradle build
 The application is built using gradle. To run the app use the command `gradle runApp` which should pull the depedencies, compile the code and run it.
 A jar can be created by running `gradle fatJar` and the jar file can be found in `build/libs/`.
 
@@ -14,7 +15,7 @@ Default values are provided by the application but these can be overridden when 
 ```shell
 docker run -it --rm -e LOCKSS_SOLR_WATCHDIR=/samples -e LOCKSS_SOLR_URL=http://192.168.56.103:8983/solr/test-core -v /home/rwincewicz/workspace/lockss/lockss-solr/samples:/samples:ro lockss/indexer
 ```
-### Alternative build (WP 20/10/2016):
+### Alternative Docker build (WP 20/10/2016):
 Alternativily you can use the image from the hub, the following command will start a container with solr and create a tets-core:
 ```shell
 docker run --name solr -d -p 8983:8983 solr solr-create -c test-core
@@ -35,14 +36,17 @@ LOCKSS_SOLR_WATCHDIR=/var/data/warc
 ```
 
 ### Vagrant
-A Vagrantfile has been added to run the app on a VM:
+A Vagrantfile has been added to run the app on a VM.
+
+If you are using a different WARCs folder than `./samples`, you'll have to make sure it's shared by updating the `Vagrantfile`. 
+```
+config.vm.synced_folder "/var/data/warc", "/var/data/warc"
+```
+
+You need to [install Vagrant]:(https://www.vagrantup.com/docs/installation/) and run the following command:
 ```shell
 vagrant up
 ```
 This should start a VM running CentOS 7 with `Docker` and `Docker Compose` and other software. Please read the original Vagrant box page for details: [Docker-enabled Vagrant boxes](https://github.com/William-Yeh/docker-enabled-vagrant).
 
-If you are using a different WARCs folder than `./samples`, you'll have to make sure it's shared by updating the `Vagrantfile`. You need to [install Vagrnt]:(https://www.vagrantup.com/docs/installation/) and run the following command:
-```
-config.vm.synced_folder "/var/data/warc", "/var/data/warc"
-```
-The VM is alos running cAdvisor which can be access at [http://localhost:58080/containers/](http://localhost:58080/containers/)
+The VM is also running cAdvisor which can be access at [http://localhost:58080/containers/](http://localhost:58080/containers/)

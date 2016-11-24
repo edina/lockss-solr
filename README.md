@@ -43,7 +43,7 @@ If you are using a different WARCs folder than `./samples`, you'll have to make 
 config.vm.synced_folder "/var/data/warc", "/var/data/warc"
 ```
 
-You need to [install Vagrant]:(https://www.vagrantup.com/docs/installation/) and run the following command:
+You need to [install Vagrant](https://www.vagrantup.com/docs/installation/) and run the following command:
 ```shell
 vagrant up
 ```
